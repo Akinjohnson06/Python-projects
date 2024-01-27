@@ -138,7 +138,7 @@ results = all_data.groupby('City', as_index=False)['Sales'].sum()
 results
 
 
-# In[20]:
+# In[17]:
 
 
 # Lets plot a graph for our result
@@ -152,58 +152,69 @@ plt.xlabel('City')
 plt.ylabel('Total Sales ($)');
 
 
-# In[ ]:
+# ### Question 3 : What product are the most often sold together?
+
+# In[18]:
 
 
+all_data
 
 
-
-# In[ ]:
-
+# In[26]:
 
 
+# 
+df = all_data[all_data['Order ID'].duplicated(keep=False)]
+df['Grouped'] = df.groupby('Order ID')['Product'].transform(lambda x: ','.join(x))
+df = df[['Order ID', 'Grouped']].drop_duplicates()
+df.head(50)
 
 
-# In[ ]:
+# In[27]:
 
 
+from itertools import combinations
+from collections import Counter
 
 
-
-# In[ ]:
-
+# In[33]:
 
 
+count = Counter()
+
+for row in df['Grouped']:
+    row_list = row.split(',')
+    count.update(Counter(combinations(row_list,2)))
+    
+count.most_common(10)
 
 
-# In[ ]:
+# ### Question 4: What products are sold the most?Why do you think its sold the most?
+
+# In[34]:
 
 
+all_data.head()
 
 
-
-# In[ ]:
-
+# In[49]:
 
 
+product_group = all_data.groupby('Product', as_index=False)['Quantity Ordered'].sum()
+product_group
 
 
-# In[ ]:
+# In[56]:
 
 
+# Lets plot a graph for our result
 
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
+plt.figure(figsize=(6,3))
+plt.bar(product_group['Product'], product_group['Quantity Ordered'])
+plt.xticks(rotation='vertical', size=8)
+plt.title('Most Products Sold')
+plt.xlabel('Products')
+plt.ylabel('Quantity Ordered for each Product');
 
 
 # In[ ]:
